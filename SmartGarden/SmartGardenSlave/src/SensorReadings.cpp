@@ -9,7 +9,7 @@ int SensorReadings::readHumid(int pinHumid)
 
     humidMapVal = map(humidVal, 0, 4096, 0, 255);
 
-    return humidMapVal;
+    return humidMapVal / 2;
 }
 
 int SensorReadings::readPhoto(int pinPhoto)
@@ -19,7 +19,7 @@ int SensorReadings::readPhoto(int pinPhoto)
 
     photoMapVal = map(photoVal, 0, 1023, 0, 255);
 
-    return photoMapVal;    
+    return photoMapVal / 10;    
 }
 
 float SensorReadings::readTemp(DallasTemperature& sensor, int deviceCount, int count)

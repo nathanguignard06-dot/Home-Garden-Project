@@ -66,7 +66,7 @@ void loop(void)
     for(int i = 0; i < deviceCount; i++)
     {
         tempVal[i] = sensor.readTemp(ds18b20, deviceCount, count);
-        Serial.print("Temperature pot");
+        Serial.print("Temperature pot ");
         Serial.print(i + 1);
         Serial.print(" : ");
         Serial.print(tempVal[i]);
@@ -81,14 +81,14 @@ void loop(void)
     Serial.print(humidVal2);
     Serial.println("%");
     Serial.print("Light levels pot 1 : ");
-    Serial.print(humidVal1);
+    Serial.print(lightVal1);
     Serial.println("%");
     Serial.print("Light levels pot 2 : ");
-    Serial.print(humidVal2);
+    Serial.print(lightVal2);
     Serial.println("%");
     Serial.println("============================================");
     Serial.println();
-    
+
     count = 0;
     delay(2000);
 }
