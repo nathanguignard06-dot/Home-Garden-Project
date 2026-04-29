@@ -22,14 +22,22 @@ int SensorReadings::readPhoto(int pinPhoto)
     return photoMapVal;    
 }
 
-float SensorReadings::readTemp(DallasTemperature& sensor, int deviceCount)
+float SensorReadings::readTemp(DallasTemperature& sensor, int deviceCount, int count)
 {
-
+    float tempC[1];
     sensors.requestTemperatures();
 
-    for (int i = 0; i < deviceCount; i++) 
+    for(int i = 0; i < deviceCount; i++)
     {
-        tempC = sensors.getTempCByIndex(i);
-        return tempC;
+        if(count == 0 && i == 0)
+        {
+            tempC[i] = sensors.getTempCByIndex(i);
+            return tempC[i];
+        }
+        else if(count == 1 && i > 0 && i < deviceCount)
+        {
+            tempC[i] = sensors.getTempCByIndex(i);
+            return tempC[i];
+        }
     }
 }

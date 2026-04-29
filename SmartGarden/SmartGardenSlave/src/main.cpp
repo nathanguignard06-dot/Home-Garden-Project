@@ -25,7 +25,8 @@ int humidVal1;
 int humidVal2;
 int lightVal1;
 int lightVal2;
-float tempVal;
+float tempVal[1];
+int count = 0;
 
 void setup(void)
 {
@@ -57,14 +58,22 @@ void loop(void)
     humidVal1 = sensor.readHumid(HUMID1_PIN);
     humidVal2 = sensor.readHumid(HUMID2_PIN);
 
-    //reading temp
-    tempVal = sensor.readTemp(ds18b20, deviceCount);
-
+    
     //debug
     Serial.println("============================================");
-    Serial.print("Temperature : ");
-    Serial.print(tempVal);
-    Serial.println("°C");
+    
+    //reading temp and showing on monitor
+    for(int i = 0; i < deviceCount; i++)
+    {
+        tempVal[i] = sensor.readTemp(ds18b20, deviceCount, count);
+        Serial.print("Temperature pot");
+        Serial.print(i + 1);
+        Serial.print(" : ");
+        Serial.print(tempVal[i]);
+        Serial.println("°C");
+        count++;
+    }
+
     Serial.print("Humidity pot 1 : ");
     Serial.print(humidVal1);
     Serial.println("%");
@@ -79,5 +88,7 @@ void loop(void)
     Serial.println("%");
     Serial.println("============================================");
     Serial.println();
+    
+    count = 0;
     delay(2000);
 }

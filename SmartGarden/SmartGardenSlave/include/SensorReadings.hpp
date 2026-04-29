@@ -13,15 +13,13 @@ class SensorReadings
 
         int readPhoto(int pinPhoto);
         int readHumid(int pinHumid);
-        float readTemp(DallasTemperature& sensor, int deviceCount);
+        float readTemp(DallasTemperature& sensor, int deviceCount, int count);
 
     private:
 
         DallasTemperature& sensors;
 
         SystemeInit& systeme1;
-
-        float tempC;
 };
 
 #endif
