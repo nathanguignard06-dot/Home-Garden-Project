@@ -25,7 +25,7 @@ int humidVal1;
 int humidVal2;
 int lightVal1;
 int lightVal2;
-float tempVal[1];
+float tempVal[2];
 int count = 0;
 
 void setup(void)

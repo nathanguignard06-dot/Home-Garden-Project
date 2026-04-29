@@ -9,6 +9,11 @@ int SensorReadings::readHumid(int pinHumid)
 
     humidMapVal = map(humidVal, 0, 4096, 0, 255);
 
+    if(humidMapVal > 200)
+    {
+        humidMapVal = 200;
+    }
+
     return humidMapVal / 2;
 }
 
@@ -17,14 +22,19 @@ int SensorReadings::readPhoto(int pinPhoto)
     int photoMapVal;
     int photoVal = analogRead(pinPhoto);
 
-    photoMapVal = map(photoVal, 0, 1023, 0, 255);
+    photoMapVal = map(photoVal, 0, 4096, 0, 255);
 
-    return photoMapVal / 10;    
+    if(photoVal > 3200)
+    {
+        photoMapVal = 200;
+    }
+
+    return photoMapVal / 2;    
 }
 
 float SensorReadings::readTemp(DallasTemperature& sensor, int deviceCount, int count)
 {
-    float tempC[1];
+    float tempC[2];
     sensors.requestTemperatures();
 
     for(int i = 0; i < deviceCount; i++)
