@@ -43,7 +43,7 @@ const int SPACES = 2;
 int humidVal[SPACES];
 int lightVal[SPACES];
 float tempVal[2];
-int count = 0;      //for temperature
+int count = 0;      //needed for functions and table placements
 
 void setup(void)
 {
@@ -86,6 +86,14 @@ void loop(void)
     }
     count = 0;      //resetting the count for the other readings
 
+    //storing light values in packet
+    for(int i = 0; i < SPACES; i ++)
+    {
+        storeData.storeLight(lightVal[i], count);
+        count++;
+    }
+    count = 0;      //resetting the count for the other readings
+
     //reading humidity
     for(int i = 0; i < SPACES; i++)
     {
@@ -105,10 +113,25 @@ void loop(void)
     }
     count = 0;      //resetting the count for other readings
 
+    //storing humidity values in packet
+    for(int i = 0; i < SPACES; i++)
+    {
+        storeData.storeHumid(humidVal[i], count);
+        count++;
+    }
+    count = 0;      //resetting the count for other readings
+
     //reading temperature
     for(int i = 0; i < deviceCount; i++)
     {
         tempVal[i] = sensor.readTemp(ds18b20, deviceCount, count);
+        count++;
+    }
+
+    //storing temperature values in packet
+    for(int i = 0; i < deviceCount; i++)
+    {
+        storeData.storeTemp(tempVal[i], count);
         count++;
     }
     
@@ -119,7 +142,7 @@ void loop(void)
         Serial.print("Temperature pot ");
         Serial.print(i + 1);
         Serial.print(" : ");
-        Serial.print(tempVal[i]);
+        Serial.print(packet.temperature[i]);
         Serial.println("°C");
     }
 
@@ -128,7 +151,7 @@ void loop(void)
         Serial.print("Humidity pot ");
         Serial.print(i + 1);
         Serial.print(" : ");
-        Serial.print(humidVal[i]);
+        Serial.print(packet.humidity[i]);
         Serial.println("%");
     }
 
@@ -137,12 +160,12 @@ void loop(void)
         Serial.print("Light levels pot ");
         Serial.print(i + 1);
         Serial.print(" : ");
-        Serial.print(lightVal[i]);
+        Serial.print(packet.light[i]);
         Serial.println("%");
     }
     Serial.println("============================================");
     Serial.println();
 
-    count = 0;
+    count = 0;      //resetting the count for other readings
     delay(2000);
 }

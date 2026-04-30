@@ -9,9 +9,9 @@ class StoreData
 
         StoreData(Packet pack);
 
-        Packet storeTemp(float tempVal, int spaces);
-        Packet storeHumid(int humidVal, int spaces);
-        Packet storeLight(int lightVal, int spaces);
+        Packet storeTemp(float tempVal, int count);
+        Packet storeHumid(int humidVal, int count);
+        Packet storeLight(int lightVal, int count);
 
     private:
 

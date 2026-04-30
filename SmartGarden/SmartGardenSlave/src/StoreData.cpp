@@ -2,50 +2,41 @@
 
 StoreData::StoreData(Packet pack) : packet(pack) {}
 
-Packet StoreData::storeTemp(float tempVal, int spaces)
+Packet StoreData::storeTemp(float tempVal, int count)
 {
-    float tempTable[spaces];
-
-    for(int i = 0; i < spaces; i++)
+    if(count == 0)
     {
-        tempTable[i] = tempVal;
+        packet.temperature[0] = tempVal;
     }
-
-    for(int i = 0; i < spaces; i++)
+    else if(count == 1)
     {
-        packet.temperature[i] = tempTable[i];
+        packet.temperature[1] = tempVal;
     }
     return packet;
 }
 
-Packet StoreData::storeHumid(int humidVal, int spaces)
+Packet StoreData::storeHumid(int humidVal, int count)
 {
-    int humidTable[spaces];
-
-    for(int i = 0; i < spaces; i++)
+    if(count == 0)
     {
-        humidTable[i] = humidVal;
+        packet.humidity[0] = humidVal;
     }
-
-    for(int i = 0; i < spaces; i++)
+    else if(count == 1)
     {
-        packet.humidity[i] = humidTable[i];
+        packet.humidity[1] = humidVal;
     }
     return packet;
 }
 
-Packet StoreData::storeLight(int lightVal, int spaces)
+Packet StoreData::storeLight(int lightVal, int count)
 {
-    int lightTable[spaces];
-
-    for(int i = 0; i < spaces; i++)
+    if(count == 0)
     {
-        lightTable[i] = lightVal;
+        packet.light[0] = lightVal;
     }
-
-    for(int i = 0; i < spaces; i++)
+    else if(count == 1)
     {
-        packet.light[i] = lightTable[i];
+        packet.light[1] = lightVal;
     }
     return packet;
 }
