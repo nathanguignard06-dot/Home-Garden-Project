@@ -15,7 +15,7 @@ class StoreData
 
     private:
 
-        Packet packet;
+        Packet& packet;
 };
 
 #endif

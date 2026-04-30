@@ -127,7 +127,8 @@ void loop(void)
         tempVal[i] = sensor.readTemp(ds18b20, deviceCount, count);
         count++;
     }
-
+    count = 0;
+    
     //storing temperature values in packet
     for(int i = 0; i < deviceCount; i++)
     {
