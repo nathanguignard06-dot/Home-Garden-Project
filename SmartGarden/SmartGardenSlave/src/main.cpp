@@ -89,7 +89,7 @@ void loop(void)
     //storing light values in packet
     for(int i = 0; i < SPACES; i ++)
     {
-        storeData.storeLight(lightVal[i], count);
+        storeData.storeLight(lightVal[i], SPACES, count);
         count++;
     }
     count = 0;      //resetting the count for the other readings
@@ -116,7 +116,7 @@ void loop(void)
     //storing humidity values in packet
     for(int i = 0; i < SPACES; i++)
     {
-        storeData.storeHumid(humidVal[i], count);
+        storeData.storeHumid(humidVal[i], SPACES, count);
         count++;
     }
     count = 0;      //resetting the count for other readings
@@ -131,7 +131,7 @@ void loop(void)
     //storing temperature values in packet
     for(int i = 0; i < deviceCount; i++)
     {
-        storeData.storeTemp(tempVal[i], count);
+        storeData.storeTemp(tempVal[i], deviceCount, count);
         count++;
     }
     
