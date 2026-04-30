@@ -10,13 +10,13 @@ class EspNowComm
 {
     public:
 
-        EspNowComm(Packet& pack, uint8_t* mad_addr, esp_now_peer_info_t& infoPeer);
+        EspNowComm(Packet& pack, esp_now_peer_info_t& infoPeer);
 
-        void begin();
+        void begin(int32_t wiFiChannel);
         void initEspNow();
 
-        void peerRegister(esp_now_peer_info_t& infoPeer);
-        void addPeer(esp_now_peer_info_t& infoPeer);
+        void peerRegister(const uint8_t* mac_addr);
+        void addPeer();
 
         int32_t getWiFiChannel(const char* ssid);
         void OnDataSent(const uint8_t* mac_addr, esp_now_send_status_t status);

@@ -3,12 +3,21 @@
 
 #include "SystemeInit.hpp"
 #include "SensorReadings.hpp"
+#include "StoreData.hpp"
+#include "EspNowComm.hpp"
+#include "Packet.hpp"
 
 //sensor pins
 const int HUMID1_PIN = 32;
 const int HUMID2_PIN = 33;
 const int PHOTO1_PIN = 34;
 const int PHOTO2_PIN = 35;
+
+//mac address for esp-now communication
+uint8_t broadcastAddress[] = {0x30, 0x76, 0xf5, 0xf9, 0x9d, 0xc8};
+
+//peer information
+esp_now_peer_info_t peerInfo;
 
 //for ds18b20 temp sensor
 #define ONE_WIRE_BUS 25
@@ -19,14 +28,22 @@ DallasTemperature ds18b20(&oneWire);
 SystemeInit systeme1(HUMID1_PIN, HUMID2_PIN, PHOTO1_PIN, PHOTO2_PIN);
 SensorReadings sensor(systeme1, ds18b20);
 
+//creating packet
+Packet packet;
+
+//creating storage object
+StoreData storeData(packet);
+
+//creating esp-now communication object
+EspNowComm espNow(packet, peerInfo);
+
 //variables
 int deviceCount = 0;
-int humidVal1;
-int humidVal2;
-int lightVal1;
-int lightVal2;
+const int SPACES = 2;
+int humidVal[SPACES];
+int lightVal[SPACES];
 float tempVal[2];
-int count = 0;
+int count = 0;      //for temperature
 
 void setup(void)
 {
@@ -51,41 +68,78 @@ void setup(void)
 void loop(void)
 {
     //reading light
-    lightVal1 = sensor.readPhoto(PHOTO1_PIN);
-    lightVal2 = sensor.readPhoto(PHOTO2_PIN);
+    for(int i = 0; i < SPACES; i++)
+    {
+        if(count == 0)
+        {
+            lightVal[i] = sensor.readPhoto(PHOTO1_PIN);
+        }
+        else if(count == 1)
+        {
+            lightVal[i] = sensor.readPhoto(PHOTO2_PIN);
+        }
+        else
+        {
+            return;
+        }
+        count++;
+    }
+    count = 0;      //resetting the count for the other readings
 
     //reading humidity
-    humidVal1 = sensor.readHumid(HUMID1_PIN);
-    humidVal2 = sensor.readHumid(HUMID2_PIN);
+    for(int i = 0; i < SPACES; i++)
+    {
+        if(count == 0)
+        {
+            humidVal[i] = sensor.readHumid(HUMID1_PIN);
+        }
+        else if(count == 1)
+        {
+            humidVal[i] = sensor.readHumid(HUMID2_PIN);
+        }
+        else
+        {
+            return;
+        }
+        count++;
+    }
+    count = 0;      //resetting the count for other readings
 
-    
-    //debug
-    Serial.println("============================================");
-    
-    //reading temp and showing on monitor
+    //reading temperature
     for(int i = 0; i < deviceCount; i++)
     {
         tempVal[i] = sensor.readTemp(ds18b20, deviceCount, count);
+        count++;
+    }
+    
+    //debug
+    Serial.println("============================================");
+    for(int i = 0; i < deviceCount; i++)
+    {
         Serial.print("Temperature pot ");
         Serial.print(i + 1);
         Serial.print(" : ");
         Serial.print(tempVal[i]);
         Serial.println("°C");
-        count++;
     }
 
-    Serial.print("Humidity pot 1 : ");
-    Serial.print(humidVal1);
-    Serial.println("%");
-    Serial.print("Humidity pot 2 : ");
-    Serial.print(humidVal2);
-    Serial.println("%");
-    Serial.print("Light levels pot 1 : ");
-    Serial.print(lightVal1);
-    Serial.println("%");
-    Serial.print("Light levels pot 2 : ");
-    Serial.print(lightVal2);
-    Serial.println("%");
+    for(int i = 0; i < SPACES; i++)
+    {
+        Serial.print("Humidity pot ");
+        Serial.print(i + 1);
+        Serial.print(" : ");
+        Serial.print(humidVal[i]);
+        Serial.println("%");
+    }
+
+    for(int i = 0; i < SPACES; i++)
+    {
+        Serial.print("Light levels pot ");
+        Serial.print(i + 1);
+        Serial.print(" : ");
+        Serial.print(lightVal[i]);
+        Serial.println("%");
+    }
     Serial.println("============================================");
     Serial.println();
 
