@@ -2,15 +2,9 @@
 
 EspNowComm::EspNowComm(Packet& pack, esp_now_peer_info_t& infoPeer) : packet(pack), peerInfo(infoPeer) {}
 
-void EspNowComm::begin(int32_t wiFiChannel)
+void EspNowComm::begin()
 {
     WiFi.mode(WIFI_STA);
-
-    int32_t channel = wiFiChannel;
-
-    esp_wifi_set_promiscuous(true);
-    esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
-    esp_wifi_set_promiscuous(false);
 }
 
 void EspNowComm::initEspNow()
@@ -55,10 +49,11 @@ int32_t EspNowComm::getWiFiChannel(const char* ssid)
     return 0;
 }
 
-void EspNowComm::OnDataSent(const uint8_t* mac_addr, esp_now_send_status_t status)
+void EspNowComm::setChannel(int32_t wifiChannel)
 {
-    Serial.print("\r\nLast Packet Send Status:\t");
-    Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+    esp_wifi_set_promiscuous(true);
+    esp_wifi_set_channel(wifiChannel, WIFI_SECOND_CHAN_NONE);
+    esp_wifi_set_promiscuous(false);
 }
 
 esp_err_t EspNowComm::sendPack(Packet& pack, uint8_t* mac_addr)

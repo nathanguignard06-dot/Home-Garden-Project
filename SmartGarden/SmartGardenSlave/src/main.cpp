@@ -16,6 +16,9 @@ const int PHOTO2_PIN = 35;
 //mac address for esp-now communication
 uint8_t broadcastAddress[] = {0x30, 0x76, 0xf5, 0xf9, 0x9d, 0xc8};
 
+//WiFi channel
+constexpr char WIFI_SSID[] = "UNIFI_IDO1";
+
 //peer information
 esp_now_peer_info_t peerInfo;
 
@@ -45,14 +48,40 @@ int lightVal[SPACES];
 float tempVal[2];
 int count = 0;      //needed for functions and table placements
 
+//callback function
+void OnDataSent(const uint8_t* mac_addr, esp_now_send_status_t status)
+{
+    Serial.print("\r\nLast Packet Send Status:\t");
+    Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
 void setup(void)
 {
     //init librairies and serial communication
     Serial.begin(115200);
+    espNow.begin();
     ds18b20.begin();
     systeme1.begin();
 
     while(!Serial) {}
+
+    //getting channel
+    int32_t channel = espNow.getWiFiChannel(WIFI_SSID);
+    
+    //setting the channel
+    espNow.setChannel(channel);
+
+    //esp now init
+    espNow.initEspNow();
+
+    //receive callback data
+    esp_now_register_send_cb(OnDataSent);
+
+    //register peer
+    espNow.peerRegister(broadcastAddress);
+
+    //add peer
+    espNow.addPeer();
 
     //finding number of ds18b20 connected
     deviceCount = ds18b20.getDeviceCount();
@@ -89,7 +118,7 @@ void loop(void)
     //storing light values in packet
     for(int i = 0; i < SPACES; i ++)
     {
-        storeData.storeLight(lightVal[i], SPACES, count);
+        storeData.storeLight(lightVal[i], count);
         count++;
     }
     count = 0;      //resetting the count for the other readings
@@ -116,7 +145,7 @@ void loop(void)
     //storing humidity values in packet
     for(int i = 0; i < SPACES; i++)
     {
-        storeData.storeHumid(humidVal[i], SPACES, count);
+        storeData.storeHumid(humidVal[i], count);
         count++;
     }
     count = 0;      //resetting the count for other readings
@@ -128,11 +157,11 @@ void loop(void)
         count++;
     }
     count = 0;
-    
+
     //storing temperature values in packet
     for(int i = 0; i < deviceCount; i++)
     {
-        storeData.storeTemp(tempVal[i], deviceCount, count);
+        storeData.storeTemp(tempVal[i], count);
         count++;
     }
     
@@ -166,6 +195,9 @@ void loop(void)
     }
     Serial.println("============================================");
     Serial.println();
+
+    //sending data to master
+    espNow.sendPack(packet, broadcastAddress);
 
     count = 0;      //resetting the count for other readings
     delay(2000);

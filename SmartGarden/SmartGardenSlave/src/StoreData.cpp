@@ -2,50 +2,41 @@
 
 StoreData::StoreData(Packet& pack) : packet(pack) {}
 
-Packet StoreData::storeTemp(float tempVal, int deviceCount, int count)
+Packet StoreData::storeTemp(float tempVal, int count)
 {
-    for(int i = 0; i < deviceCount; i++)
+    if(count == 0)
     {
-        if(count == 0 && i == 0)
-        {
-            packet.temperature[i] = tempVal;
-        }
-        else if(count == 1 && i > 0 && i < deviceCount)
-        {
-            packet.temperature[i] = tempVal;
-        }
+        packet.temperature[count] = tempVal;
+    }
+    else if(count == 1)
+    {
+        packet.temperature[count] = tempVal;
     }
     return packet;
 }
 
-Packet StoreData::storeHumid(int humidVal, int spaces, int count)
+Packet StoreData::storeHumid(int humidVal, int count)
 {
-    for(int i = 0; i < spaces; i++)
+    if(count == 0)
     {
-        if(count == 0 && i == 0)
-        {
-            packet.humidity[i] = humidVal;
-        }
-        else if(count == 1 && i > 0 && i < spaces)
-        {
-            packet.humidity[i] = humidVal;
-        }
+        packet.humidity[count] = humidVal;
+    }
+    else if(count == 1)
+    {
+        packet.humidity[count] = humidVal;
     }
     return packet;
 }
 
-Packet StoreData::storeLight(int lightVal, int spaces, int count)
+Packet StoreData::storeLight(int lightVal, int count)
 {
-    for(int i = 0; i < spaces; i++)
+    if(count == 0)
     {
-        if(count == 0 && i == 0)
-        {
-            packet.light[i] = lightVal;
-        }
-        else if(count == 1 && i > 0 && i < spaces)
-        {
-            packet.light[i] = lightVal;
-        }
+        packet.light[count] = lightVal;
+    }
+    else if(count == 1)
+    {
+        packet.light[count] = lightVal;
     }
     return packet;
 }
